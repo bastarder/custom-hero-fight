@@ -8,7 +8,7 @@ setInterval(() => {
     str += `
       <div class="item">
         <div class="key">${key}</div> :
-        <div class="value">${JSON.stringify(hero[key])}</div>
+        <div class="value">${JSON.stringify(hero[key])} (${hero[key.replace('$', '')] || ""})</div>
       </div>
     `
   }
@@ -20,7 +20,7 @@ setInterval(() => {
     str += `
       <div class="item">
         <div class="key">${key}</div> :
-        <div class="value">${JSON.stringify(monster[key])}</div>
+        <div class="value">${JSON.stringify(monster[key])} (${monster[key.replace('$', '')] || ""})</div>
       </div>
     `
   }

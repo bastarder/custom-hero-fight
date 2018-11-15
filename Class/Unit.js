@@ -4,12 +4,12 @@ class Unit{
     this.name = 1;
     this.tags = [...opt.tags];
     this.buffs = [];
-    this.$attrType    = "str",
-    this.$hp = 0;
-    this.$mp = 0;
-    this.$maxHp       = [0,0,0,0];    // 血量最大值
-    this.$maxMp       = [0,0,0,0];    // 魔法最大值
-    this.$atk         = [0,0,0,0];    // 攻击
+    this.$attrType    = "str";        // TODO: 修改为TAG
+    this.$hp          = 100;
+    this.$mp          = 100;
+    this.$maxHp       = [100,0,0,0];  // 血量最大值
+    this.$maxMp       = [100,0,0,0];  // 魔法最大值
+    this.$atk         = [5,0,0,0];    // 攻击
     this.$def         = [0,0,0,0];    // 防御
 
     this.$str         = [0,0,0,0];    // 力量
@@ -24,6 +24,8 @@ class Unit{
   }
 
   powerUp(key, value){
+    // TODO: BigNumber.js
+    // 原因： 假设 伤害增加30%，连续增加3次 , 0.3 + 0.3 + 0.3 "=" 0.8999999999999999, 数据将无法回归;
     for(let i = 0; i< this[key].length; i++){
       this[key][i] = this[key][i] + value[i];
     }
@@ -57,6 +59,23 @@ class Unit{
   get atk(){
     const [base, per, _base, _Per] = this.$atk;
     return (((base + this[this.$attrType]) * (1 + per)) + _base) * (1 + _Per);
+  }
+
+  actionUpdate(events = {}, origin, target){
+    const { hp, buffs } = events;
+    hp && (this.$hp += hp);
+    if(buffs){
+      // TODO:  ADD, REMOVE, MODIFY 3种状态;
+      buffs.forEach((buff) => {
+        buff.buff.forEach((i) => {
+          BuffList.find(j => j.id === i).event(origin, target)
+        })
+      });
+      // this.buffs = [
+      //   ...this.buffs,
+      //   ...buffs,
+      // ]
+    }
   }
 
 }
