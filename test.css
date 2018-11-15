@@ -1,0 +1,14 @@
+.info{
+  display: inline-block;
+  width: 40%;
+}
+
+.key{
+  display: inline-block;
+  border-radius: 4px;
+  min-width: 100px;
+}
+
+.value{
+  display: inline-block;
+}
