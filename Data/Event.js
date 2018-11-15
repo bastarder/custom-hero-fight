@@ -72,5 +72,19 @@ const EventList = [
       }
     }
   },
-
+  {
+    id: '5',
+    weight: 100,
+    event: function(origin, target){
+      return {
+        origin: {
+          buffs: [{
+            type: 'REMOVE',
+            buff: ['1'],
+          }]
+        },
+        target: {}
+      }
+    }
+  },
 ]

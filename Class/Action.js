@@ -13,7 +13,7 @@ class Action{
       EventResult = EventList.find(i => i.id === event).event(this.origin, this.target) || {};
     });
 
-    console.log('[EventResult] ', EventResult)
+    // console.log('[EventResult] ', EventResult)
 
     this.origin.actionUpdate(EventResult.origin, this.origin, this.target);
     this.target.actionUpdate(EventResult.target, this.origin, this.target);

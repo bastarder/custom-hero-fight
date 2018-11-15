@@ -61,20 +61,42 @@ class Unit{
     return (((base + this[this.$attrType]) * (1 + per)) + _base) * (1 + _Per);
   }
 
+  get isDeath(){
+    return this.$hp <= 0;
+  }
+
   actionUpdate(events = {}, origin, target){
     const { hp, buffs } = events;
     hp && (this.$hp += hp);
     if(buffs){
       // TODO:  ADD, REMOVE, MODIFY 3种状态;
-      buffs.forEach((buff) => {
-        buff.buff.forEach((i) => {
-          BuffList.find(j => j.id === i).event(origin, target)
-        })
+      buffs.forEach(({buff, type}) => {
+        console.log(buff, type)
+        if(type === 'ADD'){
+          buff.forEach((i) => {
+            let newBuff = BuffList.find(j => j.id === i);
+            let hasThisBuff = this.buffs.find(j => j.id === i);
+            if(hasThisBuff){
+              hasThisBuff.overlay && hasThisBuff.overlay()
+            }else{
+              newBuff.event && newBuff.event(origin, target);
+              this.buffs.push(newBuff)
+            }
+          })
+        }
+
+        if(type === 'REMOVE'){
+          buff.forEach((i) => {
+            let hasThisBuffIndex = this.buffs.findIndex(j => j.id === i);
+            if(~hasThisBuffIndex){
+              let removeBuff = this.buffs[hasThisBuffIndex];
+              removeBuff && removeBuff.remove && removeBuff.remove();
+              this.buffs.splice(hasThisBuffIndex, 1);
+            }
+          })
+        }
       });
-      // this.buffs = [
-      //   ...this.buffs,
-      //   ...buffs,
-      // ]
+
     }
   }
 
