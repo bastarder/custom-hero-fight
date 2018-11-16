@@ -2,7 +2,7 @@ class Action{
   constructor(props){
     this.origin = props.origin;
     this.target = props.target;
-    this.skill = props.skill;
+    this.skill = _.find(SkillList, {id: props.skill});
   }
 
   /** Action */

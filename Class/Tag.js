@@ -1,6 +1,7 @@
 class Tag{
-  constructor(tagName) {
+  constructor(tagName, opts) {
     this.tagName = tagName;
+    Object.assign(this,opts);
   }
 
   toString(){

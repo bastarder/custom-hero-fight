@@ -3,9 +3,9 @@ const EventList = [
     id: '2',
     weight: 1,
     event: function(origin, target){
-      origin.powerUp('$atk', [0, 0.3, 0, 0]);
+      origin.powerUp('atk', [0, 0.3, 0, 0]);
       setTimeout(() => {
-        origin.powerUp('$atk', [0, -0.3, 0, 0]);
+        origin.powerUp('atk', [0, -0.3, 0, 0]);
       }, 5000)
     }
   },
