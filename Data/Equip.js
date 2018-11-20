@@ -19,8 +19,8 @@ const EquipList = [
       critiDmg    : [6,0,0,0] ,   // 暴击伤害倍数 1.5 => 1.5倍
       dmgDown     : [1,0,0,0] ,   // 伤害减少 [5,10], 免伤 5 + 10%
     },
-    skills: [],
-    buffs: [],
+    skills: ['3', '4'],
+    buffs: ['1'],
   },
   {
     id: '2',

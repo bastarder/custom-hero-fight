@@ -1,10 +1,12 @@
 class Unit{
   constructor(opt) {
-    this.uid = 0;
-    this.name = 1;
-    this.tags = [];
-    this.buffs = [];
-    this.equipments = [];
+    this.$uid = 0;
+    this.$name = 1;
+    this.$tags = [];
+    this.$buffs = [];
+    this.$skills = [];
+    this.$equipments = [];
+    this.dataChangeListenerList = [];
     ///
     this.$attrType    = ""
     this.$staticUpAttr = ""
@@ -27,7 +29,7 @@ class Unit{
     this.$hp          = 100;
     this.$mp          = 100;
 
-    this.baseAttr = {
+    this.$baseAttr = {
       maxHp       : [100,0,0,0],  // 血量最大值
       maxMp       : [100,0,0,0],  // 魔法最大值
       atk         : [5,0,0,0],    // 攻击
@@ -44,37 +46,54 @@ class Unit{
       dmgDown     : [0,0,0,0],    // 伤害减少 [5,10], 免伤 5 + 10%
     }
 
-
     Object.assign(this, opt);
   }
 
   hasTag(tagName){
-    const index = this.tags.findIndex(i => i.tagName === tagName);
-    const tag = this.tags[index];
+    const index = this.$tags.findIndex(i => i.tagName === tagName);
+    const tag = this.$tags[index];
     return [tag, index]
   }
 
   powerUp(key, value, target){
-    target = target || this.baseAttr;
+    target = target || this.$baseAttr;
     for(let i = 0; i< target[key].length; i++){
       target[key][i] = (new BigNumber(target[key][i])).plus(value[i]).toNumber();
     }
   }
 
   get staticUpAttr(){
-    const equipments = _.map(this.equipments, (id) => _.find(EquipList, {id: id}));
-    const staticUpAttr = _.cloneDeep(this.baseAttr);
+    const equipments = _.map(this.$equipments, (id) => _.find(EquipList, {id: id}));
+    const staticUpAttr = _.cloneDeep(this.$baseAttr);
     _.forEach(equipments, (equipment) => {
       _.forEach(equipment.attr, (value, key) => {
         this.powerUp(key, value, staticUpAttr)
       })
     })
     return staticUpAttr;
-    // TODO: 装备, 各种静态增幅
   }
 
-  get powerAttr(){
-    // 计算 基础 + 静态增幅后的属性
+  get skills(){
+    let skills = [...this.$skills];
+    _.forEach(this.$equipments, (item) => {
+      item = _.find(EquipList, {id: item})
+      if(item.skills){
+        skills = [...skills, ...item.skills];
+      }
+    })
+    return skills;
+  }
+
+  get buffs(){
+    let buffs = [...this.$buffs];
+    _.forEach(this.$equipments, (item) => {
+      item = _.find(EquipList, {id: item})
+      if(item.buffs){
+        buffs = [...buffs, ...item.buffs];
+      }
+    })
+    buffs = _.map(buffs, id => _.find(BuffList, {id}));
+    return buffs;
   }
 
   get attrType(){
@@ -131,23 +150,23 @@ class Unit{
         if(type === 'ADD'){
           buff.forEach((i) => {
             let newBuff = BuffList.find(j => j.id === i);
-            let hasThisBuff = this.buffs.find(j => j.id === i);
+            let hasThisBuff = this.$buffs.find(j => j.id === i);
             if(hasThisBuff){
               hasThisBuff.overlay && hasThisBuff.overlay()
             }else{
               newBuff.event && newBuff.event(origin, target);
-              this.buffs.push(newBuff)
+              this.$buffs.push(newBuff)
             }
           })
         }
 
         if(type === 'REMOVE'){
           buff.forEach((i) => {
-            let hasThisBuffIndex = this.buffs.findIndex(j => j.id === i);
+            let hasThisBuffIndex = this.$buffs.findIndex(j => j.id === i);
             if(~hasThisBuffIndex){
-              let removeBuff = this.buffs[hasThisBuffIndex];
+              let removeBuff = this.$buffs[hasThisBuffIndex];
               removeBuff && removeBuff.remove && removeBuff.remove();
-              this.buffs.splice(hasThisBuffIndex, 1);
+              this.$buffs.splice(hasThisBuffIndex, 1);
             }
           })
         }
